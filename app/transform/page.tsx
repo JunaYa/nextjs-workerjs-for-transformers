@@ -23,21 +23,21 @@ import {
 } from "@/components/ui/select"
 import { MessageTypes, ModelNames } from "@/lib/whisper.utils"
 import { Input } from "@/components/ui/input"
-import { useEffect, useRef } from "react"
+import { useRef } from "react"
 
-const ACCEPTED_AUDIO_TYPES = [
-  "audio/mpeg",
-  "audio/wav",
-  "audio/mp4",
-  "audio/mov",
-  "audio/avi",
-  "audio/flv",
-  "audio/wmv",
-  "audio/mpeg",
-  "audio/mpg",
-  "audio/webm",
-  "audio/opus",
-]
+// const ACCEPTED_AUDIO_TYPES = [
+//   "audio/mpeg",
+//   "audio/wav",
+//   "audio/mp4",
+//   "audio/mov",
+//   "audio/avi",
+//   "audio/flv",
+//   "audio/wmv",
+//   "audio/mpeg",
+//   "audio/mpg",
+//   "audio/webm",
+//   "audio/opus",
+// ]
 
 const FormSchema = z.object({
   model: z
@@ -71,7 +71,7 @@ export default function TransformPage() {
 
   function createWorker() {
     const worker = new Worker("/whisper.worker.js", { type: "module" });
-    worker.onmessage = (event: any) => {
+    worker.onmessage = (event: MessageEvent) => {
       const { type } = event.data;
       console.log('worker.onmessage', type);
       if (type === MessageTypes.LOADING) {
@@ -90,7 +90,7 @@ export default function TransformPage() {
         // handleInferenceDone(event.data);
       }
     };
-    worker.onerror = function(event: any) {
+    worker.onerror = function(event: ErrorEvent) {
       console.error('whisper.worker.js error:', event); 
     };
     return worker;
@@ -116,11 +116,11 @@ export default function TransformPage() {
     });
   }
   
-  async function stopWorker() {
-    if (workerRef.current) {
-      workerRef.current.terminate();
-    }
-  }
+  // async function stopWorker() {
+  //   if (workerRef.current) {
+  //     workerRef.current.terminate();
+  //   }
+  // }
   
   async function readAudioFrom(file: File) {
     const sampling_rate = 16000;
@@ -132,6 +132,7 @@ export default function TransformPage() {
   }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    console.log('onSubmit', data);
     startWorker();
   }
 
