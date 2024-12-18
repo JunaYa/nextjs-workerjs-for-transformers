@@ -1,5 +1,42 @@
-import { createModelLoader } from "./modelFactories.js";
-import { MessageTypes, ModelNames } from "./utils.js";
+import { pipeline } from "@xenova/transformers";
+
+function createModelLoader(model_name) {
+  let model = null;
+  const load_model = async ({ progress_callback = undefined }) => {
+    if (model === null) {
+      model = await pipeline("automatic-speech-recognition", model_name, {
+        quantized: true,
+        progress_callback,
+      });
+    }
+    return model;
+  };
+  return load_model;
+}
+
+const MessageTypes = {
+  DOWNLOADING: "DOWNLOADING",
+  LOADING: "LOADING",
+  RESULT: "RESULT",
+  RESULT_PARTIAL: "RESULT_PARTIAL",
+  INFERENCE_REQUEST: "INFERENCE_REQUEST",
+  INFERENCE_DONE: "INFERENCE_DONE",
+};
+
+const ModelNames = [
+  "distil-whisper/distil-small.en",
+  "distil-whisper/distil-medium.en",
+  "distil-whisper/distil-large-v3",
+  "Xenova/whisper-tiny.en",
+  "Xenova/whisper-tiny",
+  "Xenova/whisper-base.en",
+  "Xenova/whisper-base",
+  "Xenova/whisper-small.en",
+  "Xenova/whisper-small",
+  "Xenova/whisper-medium",
+  "Xenova/whisper-medium.en",
+  "Xenova/whisper-large",
+];
 
 console.log('whisper.worker.js loaded');
 
