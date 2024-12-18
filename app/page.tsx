@@ -71,7 +71,7 @@ export default function TransformPage() {
   // }, []);
 
   function createWorker() {
-    const worker = new Worker("/whisper.worker.js", { type: "module" });
+    const worker = new Worker(new URL('./whisper.worker.js', import.meta.url), { type: "module" });
     worker.onmessage = (event: MessageEvent) => {
       const { type } = event.data;
       console.log('worker.onmessage', type);
