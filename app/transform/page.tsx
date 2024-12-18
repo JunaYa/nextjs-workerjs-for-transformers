@@ -60,17 +60,17 @@ export default function TransformPage() {
     resolver: zodResolver(FormSchema),
   })
 
-  useEffect(() => {
-    workerRef.current = createWorker();
-    return () => {
-      if (workerRef.current) {
-        workerRef.current.terminate();
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   workerRef.current = createWorker();
+  //   return () => {
+  //     if (workerRef.current) {
+  //       workerRef.current.terminate();
+  //     }
+  //   }
+  // }, []);
 
   function createWorker() {
-    const worker = new Worker(new URL("whisper.worker.js", import.meta.url));
+    const worker = new Worker("/whisper.worker.js", { type: "module" });
     worker.onmessage = (event: any) => {
       const { type } = event.data;
       console.log('worker.onmessage', type);
